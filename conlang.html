@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ques Translator</title>
+</head>
+<body>
+
+<h1>Ques Translator</h1>
+
+<!-- Hidden section for word lists -->
+<textarea id="conlangWords" style="display: none;">
+zimm
+zoo
+koop
+pook
+qew
+swe
+aeq
+poi
+loik
+imp
+i~e
+~lo~o~o
+p0~l
+ki
+qi
+xi
+vew
+oip
+qi~po
+soe~q
+</textarea>
+
+<textarea id="englishWords" style="display: none;">
+hello
+how
+are
+you
+doing
+today
+i
+am
+well
+about
+when
+where
+why
+who
+is
+it
+that
+odd
+interesting
+added
+to
+a
+yes
+</textarea>
+
+<form id="translatorForm">
+  <label for="sentenceInput">Enter Sentence:</label><br>
+  <input type="text" id="sentenceInput"><br>
+  <button type="button" onclick="translateToConlang()">Translate to (Q~ues)</button>
+  <button type="button" onclick="translateToEnglish()">Translate to (English)</button>
+</form>
+
+<div id="translationResult"></div>
+
+<script>
+// Extract word lists from hidden textareas
+var conlangInput = document.getElementById("conlangWords").value;
+var englishInput = document.getElementById("englishWords").value;
+
+var conlangWords = conlangInput.split('\n');
+var englishWords = englishInput.split('\n');
+
+var dictionaryToConlang = {};
+var dictionaryToEnglish = {};
+for (var i = 0; i < conlangWords.length; i++) {
+  dictionaryToConlang[englishWords[i].trim().toLowerCase()] = conlangWords[i].trim();
+  dictionaryToEnglish[conlangWords[i].trim()] = englishWords[i].trim().toLowerCase();
+}
+
+function translateToConlang() {
+  var sentenceInput = document.getElementById("sentenceInput").value.trim().toLowerCase();
+
+  var translatedSentence = translateSentence(sentenceInput, dictionaryToConlang);
+
+  document.getElementById("translationResult").innerHTML = "<h2>Translation to Q~ues:</h2><p>" + translatedSentence + "</p>";
+}
+
+function translateToEnglish() {
+  var sentenceInput = document.getElementById("sentenceInput").value.trim();
+
+  var translatedSentence = translateSentence(sentenceInput, dictionaryToEnglish);
+
+  document.getElementById("translationResult").innerHTML = "<h2>Translation to English:</h2><p>" + translatedSentence + "</p>";
+}
+
+function translateSentence(sentence, dictionary) {
+  var words = sentence.split(' ');
+  var translatedWords = [];
+  for (var i = 0; i < words.length; i++) {
+    var word = words[i];
+    var punctuation = '';
+    if (!isLetter(word[word.length - 1])) {
+      punctuation = word[word.length - 1];
+      word = word.slice(0, -1);
+    }
+    if (word.toLowerCase() in dictionary) {
+      translatedWords.push(dictionary[word.toLowerCase()] + punctuation);
+    } else {
+      translatedWords.push("[UNKNOWN]" + punctuation);
+    }
+  }
+  return translatedWords.join(' ');
+}
+
+function isLetter(c) {
+  return c.toLowerCase() != c.toUpperCase();
+}
+</script>
+
+</body>
+</html>
